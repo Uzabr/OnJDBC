@@ -1,15 +1,16 @@
 package jm.task.core.jdbc.model;
 
 import javax.persistence.Column;
+import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
-
-@Table
+@Entity
+@Table(name = "user")
 public class User {
     @Id
     private Long id;
 
-    @Column
+    @Column(name = "fname")
     private String name;
 
     @Column
