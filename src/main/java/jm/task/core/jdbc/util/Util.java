@@ -72,11 +72,16 @@ public class Util {
                 settings.put(Environment.USER, "root");
                 settings.put(Environment.PASS, "toor");
                 settings.put(Environment.DIALECT, "org.hibernate.dialect.MySQL5Dialect");
-                Configuration configuration = new Configuration();
-                configuration.setProperties(settings);
-                configuration.addAnnotatedClass(User.class);
-                serviceRegistry = registryBuilder.applySettings(configuration.getProperties()).build();
-                sessionFactory = configuration.buildSessionFactory(serviceRegistry);
+//                Configuration configuration = new Configuration();
+//                configuration.setProperties(settings);
+//                configuration.addAnnotatedClass(User.class);
+//                serviceRegistry = registryBuilder.applySettings(configuration.getProperties()).build();
+//                sessionFactory = configuration.buildSessionFactory(serviceRegistry);
+                settings.put(Environment.HBM2DDL_AUTO, "update");
+                sessionFactory = new Configuration()
+                        .addProperties(settings)
+                        .addAnnotatedClass(User.class)
+                        .buildSessionFactory().openSession().getSessionFactory();
             }
             catch (Exception exception ) {
                 exception.printStackTrace();
