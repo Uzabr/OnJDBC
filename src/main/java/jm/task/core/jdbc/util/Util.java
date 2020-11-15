@@ -4,6 +4,8 @@ import jm.task.core.jdbc.model.User;
 import org.hibernate.SessionFactory;
 import org.hibernate.boot.registry.StandardServiceRegistry;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
+import org.hibernate.cfg.AnnotationConfiguration;
+import org.hibernate.cfg.Configuration;
 import org.hibernate.cfg.Environment;
 import org.hibernate.mapping.MetadataSource;
 import org.hibernate.metamodel.Metadata;
@@ -15,6 +17,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Properties;
 
 public class Util {
     // реализуйте настройку соеденения с БД
@@ -57,26 +60,23 @@ public class Util {
         if (sessionFactory == null) {
             try {
                 StandardServiceRegistryBuilder registryBuilder = new StandardServiceRegistryBuilder();
-                Map<String, String> settings  = new HashMap<>();
-                settings.put("hibernate.connection.driver_class", "com.mysql.jdbc.Driver");
-                settings.put("hibernate.connection.url", "jdbc:mysql://localhost:3306/myDS");
-                settings.put("hibernate.connection.username", "root");
-                settings.put("hibernate.connection.password", "toor");
-                settings.put("hibernate.show_sql", "true");
+                Properties settings =  new Properties();
+//                settings.put("hibernate.connection.driver_class", "com.mysql.jdbc.Driver");
+//                settings.put("hibernate.connection.url", "jdbc:mysql://localhost:3306/myDS");
+//                settings.put("hibernate.connection.username", "root");
+//                settings.put("hibernate.connection.password", "toor");
+//                settings.put("hibernate.show_sql", "true");
 
-//                settings.put(Environment.DRIVER, "org.mysql.Driver");
-//                settings.put(Environment.URL, "jdbc:mysql://localhost:3306/myDS");
-//                settings.put(Environment.USER, "root");
-//                settings.put(Environment.PASS, "toor");
-//                settings.put(Environment.DIALECT, "org.hibernate.dialect.MySQL5Dialect");
-
-                registryBuilder.applySettings(settings);
-                serviceRegistry = registryBuilder.build();
-
-                MetadataSources sources = new MetadataSources(serviceRegistry)
-                        .addAnnotatedClass(User.class);
-
-                sessionFactory = sources.buildMetadata().buildSessionFactory();
+                settings.put(Environment.DRIVER, "com.mysql.cj.jdbc.Driver");
+                settings.put(Environment.URL, "jdbc:mysql://localhost:3306/myDS?characterEncoding = utf8&serverTimezone=UTC");
+                settings.put(Environment.USER, "root");
+                settings.put(Environment.PASS, "toor");
+                settings.put(Environment.DIALECT, "org.hibernate.dialect.MySQL5Dialect");
+                Configuration configuration = new Configuration();
+                configuration.setProperties(settings);
+                configuration.addAnnotatedClass(User.class);
+                serviceRegistry = registryBuilder.applySettings(configuration.getProperties()).build();
+                sessionFactory = configuration.buildSessionFactory(serviceRegistry);
             }
             catch (Exception exception ) {
                 exception.printStackTrace();
